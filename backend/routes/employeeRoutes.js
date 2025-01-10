@@ -16,16 +16,23 @@ const router = express.Router();
 router.get(
   "/",
   authMiddleware,
-  roleMiddleware(["Admin", "Manager"]),
+  roleMiddleware(["Admin", "Manager",,"Regular"]),
   getEmployees
 ); // Only Admin and Manager can get employees
 router.get(
   "/:id",
   authMiddleware,
-  roleMiddleware(["Admin", "Manager"]),
+  roleMiddleware(["Admin", "Manager","Regular"]),
   getEmployeeProfile
 ); // Only Admin and Manager can get employees
-router.post("/", authMiddleware, roleMiddleware(["Admin"]), addEmployee); // Only Admin can add an employee
+
+
+
+
+
+
+
+router.post("/", authMiddleware, roleMiddleware(["Admin", "Manager"]), addEmployee); // Only Admin can add an employee
 router.put(
   "/:id",
   authMiddleware,
@@ -35,7 +42,7 @@ router.put(
 router.delete(
   "/:id",
   authMiddleware,
-  roleMiddleware(["Admin"]),
+  roleMiddleware(["Admin","Manager"]),
   deleteEmployee
 ); // Only Admin can delete an employee
 

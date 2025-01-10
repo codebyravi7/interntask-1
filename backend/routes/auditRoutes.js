@@ -11,9 +11,9 @@ import {
 const router = express.Router();
 
 // Get all audit logs (Admin-only route)
-router.get("/", authMiddleware, roleMiddleware(["Admin"]), getAuditLogs);
+router.get("/", authMiddleware, roleMiddleware(["Admin","Manager","Regular"]), getAuditLogs);
 
 // Delete all audit logs (Admin-only route, optional for cleanup)
-router.delete("/", authMiddleware, roleMiddleware(["Admin"]), deleteAuditLogs);
+router.delete("/", authMiddleware, roleMiddleware(["Admin","Manager"]), deleteAuditLogs);
 
 export default router;

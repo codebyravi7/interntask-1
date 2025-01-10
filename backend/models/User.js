@@ -10,6 +10,10 @@ const userSchema = new mongoose.Schema({
     enum: ["Admin", "Manager", "Regular"],
     default: "Regular",
   },
+  department: {
+    type: String,
+    default: "",
+  },
 });
 
 userSchema.pre("save", async function (next) {

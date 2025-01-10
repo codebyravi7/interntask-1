@@ -7,7 +7,8 @@ const RegisterPage = () => {
     username: "",
     email: "",
     password: "",
-    role: "Admin", // Default role
+    role: "Regular", // Default role
+    department: "",
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -131,11 +132,37 @@ const RegisterPage = () => {
                 onChange={handleChange}
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               >
-                <option value="Admin">Admin</option>
+                <option value="Regular">Regular</option>
                 <option value="Manager">Manager</option>
-                <option value="Employee">Employee</option>
+                <option value="Admin">Admin</option>
               </select>
             </div>
+
+            {formData.role === "Manager" && (
+              <div>
+                <label
+                  htmlFor="department"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Department
+                </label>
+                <select
+                  id="department"
+                  name="department"
+                  value={formData.department}
+                  onChange={handleChange}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                >
+                  <option value="">Select Department</option>
+                  <option value="Engineering">Engineering</option>
+                  <option value="Product">Product</option>
+                  <option value="Design">Design</option>
+                  <option value="Quality Assurance">Quality Assurance</option>
+                  <option value="Data Science">Data Science</option>
+                  <option value="Operations">Operations</option>
+                </select>
+              </div>
+            )}
           </div>
 
           <div>

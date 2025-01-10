@@ -18,7 +18,7 @@ export const loginUser = async (req, res) => {
 
     // If password matches, create JWT token
     const token = jwt.sign(
-      { userId: user._id, role: user.role }, // Include user info in the token
+      { userId: user._id, role: user.role, department: user.department }, // Include user info in the token
       "process.env.JWT_SECRET", // Use secret from environment variable
       { expiresIn: "15d" }
     );
@@ -33,7 +33,7 @@ export const loginUser = async (req, res) => {
 
 // Register
 export const registerUser = async (req, res) => {
-  const { username, email, password, role } = req.body;
+  const { username, email, password, role, department } = req.body;
   try {
     // Check if all fields are provided
     if (!username || !email || !password) {
@@ -56,6 +56,7 @@ export const registerUser = async (req, res) => {
       email,
       password,
       role: role || "Regular", // Default role if not provided
+      department,
     });
 
     // Save the user to the database

@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { deleteEmployee,updateEmployee, getEmployeeDetails } from "../services/api";
+import {
+  deleteEmployee,
+  updateEmployee,
+  getEmployeeDetails,
+} from "../services/api";
 import { useNavigate } from "react-router-dom";
 const EmployeeProfile = ({ employeeId }) => {
   const [employee, setEmployee] = useState(null);
@@ -22,24 +26,26 @@ const EmployeeProfile = ({ employeeId }) => {
     fetchEmployee();
   }, [employeeId]);
 
-    const handleUpdate = async () => {
-      try {
-        const response = await updateEmployee(employeeId,formData);
-        setEmployee(response);
-        setIsEditing(false);
-        setError(null);
-      } catch (err) {
-        setError("Failed to update employee");
-      }
-    };
+  const handleUpdate = async () => {
+    try {
+      const response = await updateEmployee(employeeId, formData);
+      setEmployee(response);
+      setIsEditing(false);
+      setError(null);
+    } catch (err) {
+      setError("Failed to update employee");
+      alert("you are not authorised to upadate");
+    }
+  };
 
   const handleDelete = async () => {
     try {
-      await deleteEmployee(employeeId)
+      await deleteEmployee(employeeId);
       setIsDeleting(false);
       navigate("/");
     } catch (err) {
       setError("Failed to delete employee");
+      alert("you are not authorised to delete");
       setIsDeleting(false);
     }
   };

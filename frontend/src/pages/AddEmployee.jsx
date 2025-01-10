@@ -1,7 +1,14 @@
 import React, { useState } from "react";
 import { addEmployee } from "../services/api";
+import { useAuthContext } from "../context/AuthContext";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const EmployeeRegistrationForm = () => {
+  const { user } = useAuthContext();
+  const navigate = useNavigate();
+  if (user?.role === "Regular") {
+    return navigate("/");
+  }
   const positions = [
     { id: "sde1", title: "Software Development Engineer I" },
     { id: "sde2", title: "Software Development Engineer II" },
@@ -42,7 +49,14 @@ const EmployeeRegistrationForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (user?.role === "Manager" && formData?.department != user?.department) {
+      alert(
+        `You are a manager of ${user?.department},can't change other department data`
+      );
+      return;
+    }
     await addEmployee(formData);
+    navigate("/employees");
   };
 
   return (

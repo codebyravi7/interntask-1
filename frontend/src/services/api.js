@@ -1,11 +1,10 @@
 import axios from "axios";
 import { getrealToken } from "../utils/authUtils.js";
 
-export const token = getrealToken();
 const api = axios.create({
   baseURL: "http://localhost:5000/api",
   headers: {
-    Authorization: token,
+    Authorization: getrealToken(),
     "Content-Type": "application/json",
   },
 });
@@ -37,8 +36,8 @@ export const deleteEmployee = async (employeeId) => {
   const response = await api.delete(`/employees/${employeeId}`);
   return response.data;
 };
-export const updateEmployee = async (employeeId,formData) => {
-  const response = await api.put(`/employees/${employeeId}`,formData);
+export const updateEmployee = async (employeeId, formData) => {
+  const response = await api.put(`/employees/${employeeId}`, formData);
   return response.data;
 };
 
