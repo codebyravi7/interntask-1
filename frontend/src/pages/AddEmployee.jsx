@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { addEmployee } from "../services/api";
 import { useAuthContext } from "../context/AuthContext";
-import { Navigate, useNavigate } from "react-router-dom";
+import {useNavigate } from "react-router-dom";
 
 const EmployeeRegistrationForm = () => {
   const { user } = useAuthContext();
@@ -9,6 +9,7 @@ const EmployeeRegistrationForm = () => {
   if (user?.role === "Regular") {
     return navigate("/");
   }
+
   const positions = [
     { id: "sde1", title: "Software Development Engineer I" },
     { id: "sde2", title: "Software Development Engineer II" },
@@ -37,6 +38,7 @@ const EmployeeRegistrationForm = () => {
     position: "",
     department: "",
     dateOfJoining: "",
+    photo: null,
   });
 
   const handleChange = (e) => {
@@ -47,16 +49,38 @@ const EmployeeRegistrationForm = () => {
     });
   };
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+
+    reader.onloadend = () => {
+      setFormData({
+        ...formData,
+        photo: reader.result, // Base64 encoded string
+      });
+    };
+
+    if (file) {
+      reader.readAsDataURL(file); // Converts file to Base64 string
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (user?.role === "Manager" && formData?.department != user?.department) {
+
+    if (user?.role === "Manager" && formData?.department !== user?.department) {
       alert(
-        `You are a manager of ${user?.department},can't change other department data`
+        `You are a manager of ${user?.department}, can't change other department data`
       );
       return;
     }
-    await addEmployee(formData);
-    navigate("/employees");
+
+    try {
+      await addEmployee(formData); // Ensure the backend supports Base64-encoded image strings
+      navigate("/employees");
+    } catch (error) {
+      console.error("Error adding employee:", error);
+    }
   };
 
   return (
@@ -83,8 +107,7 @@ const EmployeeRegistrationForm = () => {
               onChange={handleChange}
               required
               placeholder="John Doe"
-              className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400
-                focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
@@ -99,8 +122,7 @@ const EmployeeRegistrationForm = () => {
               onChange={handleChange}
               required
               placeholder="john.doe@company.com"
-              className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400
-                focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
@@ -113,8 +135,7 @@ const EmployeeRegistrationForm = () => {
               value={formData.position}
               onChange={handleChange}
               required
-              className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm
-                focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
             >
               <option value="">Select position</option>
               {positions.map((position) => (
@@ -134,8 +155,7 @@ const EmployeeRegistrationForm = () => {
               value={formData.department}
               onChange={handleChange}
               required
-              className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm
-                focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
             >
               <option value="">Select department</option>
               {departments.map((department) => (
@@ -156,16 +176,26 @@ const EmployeeRegistrationForm = () => {
               value={formData.dateOfJoining}
               onChange={handleChange}
               required
-              className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm
-                focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Upload Photo
+            </label>
+            <input
+              type="file"
+              name="photo"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
           <button
             type="submit"
-            className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white
-              bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
-              transition-colors duration-200"
+            className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
           >
             Register Employee
           </button>

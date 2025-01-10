@@ -1,16 +1,28 @@
 import { AuditLog } from "../models/Auditlog.js";
 import Employee from "../models/Employee.js";
+import cloudinary from "../utils/cloudinary.js";
 
 // Add Employee with Audit Log
 export const addEmployee = async (req, res) => {
-  const { name, email, position, department, dateOfJoining } = req.body;
+  const { name, email, position, department, dateOfJoining, photo } = req.body;
+  
   try {
+    let imageUrl;
+    if (photo) {
+      const uploadResponse = await cloudinary.uploader.upload(photo);
+      imageUrl = uploadResponse.secure_url;
+      // try {
+      // } catch (err) {
+      //   console.log("Error in the upload at cloudinary", err);
+      // }
+    }
     const newEmployee = new Employee({
       name,
       email,
       position,
       department,
       dateOfJoining,
+      profilePicture: imageUrl,
     });
     await newEmployee.save();
 

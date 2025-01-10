@@ -15,6 +15,7 @@ const authMiddleware = (req, res, next) => {
 
 const roleMiddleware = (roles) => (req, res, next) => {
   try {
+    // console.log(req?.user)
     if (!roles.includes(req?.user?.role)) {
       return res.status(403).json({ msg: "Access denied" });
     } else {

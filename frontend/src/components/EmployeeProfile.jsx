@@ -5,6 +5,8 @@ import {
   getEmployeeDetails,
 } from "../services/api";
 import { useNavigate } from "react-router-dom";
+import { Mail, Calendar, Folder, Edit, Trash2 } from "lucide-react"; // Importing icons from lucide-react
+
 const EmployeeProfile = ({ employeeId }) => {
   const [employee, setEmployee] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -12,6 +14,7 @@ const EmployeeProfile = ({ employeeId }) => {
   const [formData, setFormData] = useState(null);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+
   useEffect(() => {
     const fetchEmployee = async () => {
       try {
@@ -22,7 +25,6 @@ const EmployeeProfile = ({ employeeId }) => {
         setError("Failed to load employee data");
       }
     };
-
     fetchEmployee();
   }, [employeeId]);
 
@@ -34,7 +36,7 @@ const EmployeeProfile = ({ employeeId }) => {
       setError(null);
     } catch (err) {
       setError("Failed to update employee");
-      alert("you are not authorised to upadate");
+      alert("You are not authorised to update");
     }
   };
 
@@ -45,12 +47,42 @@ const EmployeeProfile = ({ employeeId }) => {
       navigate("/");
     } catch (err) {
       setError("Failed to delete employee");
-      alert("you are not authorised to delete");
+      alert("You are not authorised to delete");
       setIsDeleting(false);
     }
   };
 
+  const positions = [
+    { id: "sde1", title: "Software Development Engineer I" },
+    { id: "sde2", title: "Software Development Engineer II" },
+    { id: "sde3", title: "Software Development Engineer III" },
+    { id: "sse", title: "Senior Software Engineer" },
+    { id: "em", title: "Engineering Manager" },
+    { id: "pm", title: "Product Manager" },
+    { id: "designer", title: "UI/UX Designer" },
+    { id: "qa", title: "Quality Assurance Engineer" },
+    { id: "devops", title: "DevOps Engineer" },
+    { id: "data", title: "Data Scientist" },
+  ];
+
+  const departments = [
+    "Engineering",
+    "Product",
+    "Design",
+    "Quality Assurance",
+    "Operations",
+    "Data Science",
+  ];
+
   const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSelectChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -151,13 +183,20 @@ const EmployeeProfile = ({ employeeId }) => {
                 onChange={handleInputChange}
                 className="px-3 py-2 border rounded text-center"
               />
-              <input
-                type="text"
+              <select
                 name="position"
                 value={formData.position}
-                onChange={handleInputChange}
-                className="px-3 py-2 border rounded text-center"
-              />
+                onChange={handleSelectChange}
+                required
+                className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              >
+                <option value="">Select position</option>
+                {positions.map((position) => (
+                  <option key={position.id} value={position.id}>
+                    {position.title}
+                  </option>
+                ))}
+              </select>
             </div>
           ) : (
             <>
@@ -185,19 +224,7 @@ const EmployeeProfile = ({ employeeId }) => {
           {/* Email */}
           <div className="flex items-start space-x-3">
             <div className="p-2 bg-blue-50 rounded-lg">
-              <svg
-                className="w-5 h-5 text-blue-500"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                />
-              </svg>
+              <Mail className="w-5 h-5 text-blue-500" />
             </div>
             <div>
               <p className="text-sm text-gray-500">Email</p>
@@ -220,19 +247,7 @@ const EmployeeProfile = ({ employeeId }) => {
           {/* Date of Joining */}
           <div className="flex items-start space-x-3">
             <div className="p-2 bg-green-50 rounded-lg">
-              <svg
-                className="w-5 h-5 text-green-500"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M8 7V3m8 0v4M3 13h18M5 21h14a2 2 0 002-2v-6H3v6a2 2 0 002 2z"
-                />
-              </svg>
+              <Calendar className="w-5 h-5 text-green-500" />
             </div>
             <div>
               <p className="text-sm text-gray-500">Date of Joining</p>
@@ -245,75 +260,30 @@ const EmployeeProfile = ({ employeeId }) => {
           {/* Department */}
           <div className="flex items-start space-x-3">
             <div className="p-2 bg-yellow-50 rounded-lg">
-              <svg
-                className="w-5 h-5 text-yellow-500"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M3 7l6 6m0 0l6-6m-6 6V4"
-                />
-              </svg>
+              <Folder className="w-5 h-5 text-yellow-500" />
             </div>
             <div>
               <p className="text-sm text-gray-500">Department</p>
-              <p className="text-sm font-medium text-gray-800">
-                {employee.department}
-              </p>
-            </div>
-          </div>
-
-          {/* Phone Number */}
-          <div className="flex items-start space-x-3">
-            <div className="p-2 bg-purple-50 rounded-lg">
-              <svg
-                className="w-5 h-5 text-purple-500"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M3 10l7-7m0 0l7 7M4 20h16a2 2 0 002-2V4"
-                />
-              </svg>
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Phone</p>
-              <p className="text-sm font-medium text-gray-800">
-                {employee.phone}
-              </p>
-            </div>
-          </div>
-
-          {/* Address */}
-          <div className="flex items-start space-x-3">
-            <div className="p-2 bg-pink-50 rounded-lg">
-              <svg
-                className="w-5 h-5 text-pink-500"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M16 11c0 3.866-2.239 7-5 7s-5-3.134-5-7a5 5 0 1110 0zM12 22v.01"
-                />
-              </svg>
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Address</p>
-              <p className="text-sm font-medium text-gray-800">
-                {employee.address}
-              </p>
+              {isEditing ? (
+                <select
+                  name="department"
+                  value={formData.department}
+                  onChange={handleSelectChange}
+                  required
+                  className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                >
+                  <option value="">Select department</option>
+                  {departments.map((department) => (
+                    <option key={department} value={department}>
+                      {department}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <p className="text-sm font-medium text-gray-800">
+                  {employee.department}
+                </p>
+              )}
             </div>
           </div>
         </div>
@@ -342,14 +312,16 @@ const EmployeeProfile = ({ employeeId }) => {
             <>
               <button
                 onClick={() => setIsEditing(true)}
-                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded"
               >
+                <Edit className="inline-block w-4 h-4 mr-2" />
                 Edit Profile
               </button>
               <button
                 onClick={() => setIsDeleting(true)}
                 className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
               >
+                <Trash2 className="inline-block w-4 h-4 mr-2" />
                 Delete Profile
               </button>
             </>
@@ -357,7 +329,6 @@ const EmployeeProfile = ({ employeeId }) => {
         </div>
       </div>
 
-      {/* Delete Confirmation Modal */}
       {isDeleting && <DeleteConfirmation />}
     </div>
   );
